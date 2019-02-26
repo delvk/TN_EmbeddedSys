@@ -7,7 +7,9 @@
 
 #define ECHOMAX 255     /* Longest string to echo */
 
-void DieWithError(char *errorMessage);  /* External error handling function */
+void DieWithError(char *errorMessage) {
+	printf("%p", errorMessage);
+}  /* External error handling function */
 
 int main(int argc, char *argv[])
 {
@@ -43,6 +45,7 @@ int main(int argc, char *argv[])
   
     for (;;) /* Run forever */
     {
+		printf("Listening \n");
         /* Set the size of the in-out parameter */
         cliAddrLen = sizeof(echoClntAddr);
 

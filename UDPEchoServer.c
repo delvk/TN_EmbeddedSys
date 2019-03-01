@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
   
     for (;;) /* Run forever */
     {
-		printf("Listening \n");
+		printf("\nwaiting to recvfrom ...");
         /* Set the size of the in-out parameter */
         cliAddrLen = sizeof(echoClntAddr);
 
@@ -54,8 +54,10 @@ int main(int argc, char *argv[])
             (struct sockaddr *) &echoClntAddr, &cliAddrLen)) < 0)
             DieWithError("recvfrom() failed");
 
-        printf("Handling client %s\n", inet_ntoa(echoClntAddr.sin_addr));
-
+        printf("got packet from  %s\n", inet_ntoa(echoClntAddr.sin_addr));
+        printf("packet is %d bytes long", recvMsgSize);
+        printf("packet contains \"%s\"",echoBuffer);
+        printf("send packet back to client\n");
         /* Send received datagram back to the client */
         if (sendto(sock, echoBuffer, recvMsgSize, 0, 
              (struct sockaddr *) &echoClntAddr, sizeof(echoClntAddr)) != recvMsgSize)

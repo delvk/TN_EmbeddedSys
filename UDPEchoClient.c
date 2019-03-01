@@ -62,7 +62,10 @@ int main(int argc,char *argv[])
             perror("sendto() sent a different number of bytes than expected");
             //exit(1);
         }
-
+        else{
+            printf("Input: %s", echoString);
+            printf("send %d bytes to %s", echoStringLen,inet_ntoa(echoServAddr.sin_addr));
+        }
         /* Recv a response */
         fromSize = sizeof(fromAddr);
         if((resStringLen = recvfrom(sock,echoBuffer,ECHOMAX,0,(struct sockaddr *)&fromAddr,&fromSize)) !=echoStringLen)

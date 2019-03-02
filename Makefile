@@ -1,11 +1,17 @@
 cc=gcc
-all: server client
+all: udpserver udpclient tcpserver tcpclient
 		gcc -o UDPEchoClient UDPEchoClient.c
-server: UDPEchoServer.c
+udpserver: UDPEchoServer.c
 	gcc -o UDPEchoServer UDPEchoServer.c
-client: UDPEchoClient.c
+udpclient: UDPEchoClient.c
 	gcc -o UDPEchoClient UDPEchoClient.c
+tcpserver: TCPEchoServer.c
+	gcc -o TCPEchoServer TCPEchoServer.c
+tcpclient: TCPEchoClient.c
+	gcc -o TCPEchoClient TCPEchoClient.c
 clean:
 	rm -rf *.o
 	rm UDPEchoClient
 	rm UDPEchoServer
+	rm TCPEchoClient
+	rm TCPEchoServer

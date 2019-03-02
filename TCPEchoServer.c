@@ -1,15 +1,20 @@
+#include <stdio.h>      /* for printf() and fprintf() */
+#include <sys/socket.h> /* for socket() and bind() */
+#include <arpa/inet.h>  /* for sockaddr_in and inet_ntoa() */
+#include <stdlib.h>     /* for atoi() and exit() */
+#include <string.h>     /* for memset() */
+#include <unistd.h>     /* for close() */
 #include <netdb.h> 
 #include <netinet/in.h> 
-#include <stdlib.h> 
-#include <string.h> 
-#include <sys/socket.h> 
 #include <sys/types.h> 
-#define MAX 80 
-#define PORT 8080 
+
+
+#define MAX 255 
+// #define PORT 8080 
 #define SA struct sockaddr 
 
 // Function designed for chat between client and server. 
-void func(int sockfd) 
+void echo(int sockfd) 
 { 
 	char buff[MAX]; 
 	int n; 
@@ -20,15 +25,11 @@ void func(int sockfd)
 		// read the message from client and copy it in buffer 
 		read(sockfd, buff, sizeof(buff)); 
 		// print buffer which contains the client contents 
-		printf("From client: %s\t To client : ", buff); 
-		bzero(buff, MAX); 
-		n = 0; 
-		// copy server message in the buffer 
-		while ((buff[n++] = getchar()) != '\n') 
-			; 
+		printf("From client: %s\n", buff); 
 
 		// and send that buffer to client 
-		write(sockfd, buff, sizeof(buff)); 
+		
+		if(write(sockfd, buff, sizeof(buff))) printf("Echo back to client : %s\n", buff); 
 
 		// if msg contains "Exit" then server exit and chat ended. 
 		if (strncmp("exit", buff, 4) == 0) { 
@@ -39,10 +40,22 @@ void func(int sockfd)
 } 
 
 // Driver function 
-int main() 
+int main(int argc, char *argv[]) 
 { 
-	int sockfd, connfd, len; 
-	struct sockaddr_in servaddr, cli; 
+	int sockfd, connfd, len; /* Socket */
+	struct sockaddr_in servaddr; /* Local address */
+    struct sockaddr_in cliAddr; /* Client address */
+    unsigned int cliAddrLen;         /* Length of incoming message */
+    unsigned short PORT;     /* Server port */
+    int recvMsgSize;                 /* Size of received message */
+
+    if (argc != 2)         /* Test for correct number of parameters */
+    {
+        fprintf(stderr,"Usage:  %s <UDP SERVER PORT>\n", argv[0]);
+        exit(1);
+    }
+
+    PORT = atoi(argv[1]);  /* First arg:  local port */
 
 	// socket create and verification 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
@@ -74,10 +87,10 @@ int main()
 	} 
 	else
 		printf("Server listening..\n"); 
-	len = sizeof(cli); 
+	len = sizeof(cliAddr); 
 
 	// Accept the data packet from client and verification 
-	connfd = accept(sockfd, (SA*)&cli, &len); 
+	connfd = accept(sockfd, (SA*)&cliAddr, &len); 
 	if (connfd < 0) { 
 		printf("server acccept failed...\n"); 
 		exit(0); 
@@ -85,8 +98,8 @@ int main()
 	else
 		printf("server acccept the client...\n"); 
 
-	// Function for chatting between client and server 
-	func(connfd); 
+	// echo fucntion between client and server 
+	echo(connfd); 
 
 	// After chatting close the socket 
 	close(sockfd); 

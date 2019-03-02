@@ -14,10 +14,11 @@
 #define SA struct sockaddr 
 
 // Function designed for chat between client and server. 
-void echo(int sockfd) 
+void echo(int sockfd, struct sockaddr_in cliAddr) 
 { 
 	char buff[MAX]; 
 	int n; 
+	const char * clientAddress = inet_ntoa(cliAddr.sin_addr);
 	// infinite loop for chat 
 	for (;;) { 
 		bzero(buff, MAX); 
@@ -25,11 +26,11 @@ void echo(int sockfd)
 		// read the message from client and copy it in buffer 
 		read(sockfd, buff, sizeof(buff)); 
 		// print buffer which contains the client contents 
-		printf("From client: %s\n", buff); 
+		printf("From %s: %s\n",clientAddress , buff); 
 
 		// and send that buffer to client 
 		
-		if(write(sockfd, buff, sizeof(buff))) printf("Echo back to client : %s\n", buff); 
+		if(write(sockfd, buff, sizeof(buff))) printf("Echo back to %s : %s\n", clientAddress, buff); 
 
 		// if msg contains "Exit" then server exit and chat ended. 
 		if (strncmp("exit", buff, 4) == 0) { 
@@ -99,7 +100,7 @@ int main(int argc, char *argv[])
 		printf("server acccept the client...\n"); 
 
 	// echo fucntion between client and server 
-	echo(connfd); 
+	echo(connfd, cliAddr); 
 
 	// After chatting close the socket 
 	close(sockfd); 

@@ -4,10 +4,14 @@
 #include <stdlib.h> 
 #include <string.h> 
 #include <sys/socket.h> 
-#define MAX 80 
-#define PORT 8080 
+#include<arpa/inet.h>
+#include<unistd.h>
+
+
+#define MAX 255 
+
 #define SA struct sockaddr 
-void func(int sockfd) 
+void echo(int sockfd) 
 { 
 	char buff[MAX]; 
 	int n; 
@@ -28,10 +32,32 @@ void func(int sockfd)
 	} 
 } 
 
-int main() 
+int main(int argc,char *argv[]) 
 { 
 	int sockfd, connfd; 
 	struct sockaddr_in servaddr, cli; 
+
+    unsigned short PORT ;
+    unsigned int fromSize;// in-out of address size from recvfrom()
+
+    char *servIP = malloc(MAX*sizeof(char));
+    char *echoString = malloc(MAX*sizeof(char));
+    char echoBuffer[MAX+1];
+
+    if(argc>3||argc<2)
+    {
+        printf("Useage: %s <Server IP> [<Echo Port>]\n",argv[0]);
+        exit(1);
+    }
+
+    servIP = argv[1];
+
+    if(argc == 3)
+        PORT = atoi(argv[2]);
+    else
+        PORT = 7; // 7 is the well-known port for echo service
+
+
 
 	// socket create and varification 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
@@ -45,8 +71,10 @@ int main()
 
 	// assign IP, PORT 
 	servaddr.sin_family = AF_INET; 
-	servaddr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
+    servaddr.sin_addr.s_addr = inet_addr(servIP);
 	servaddr.sin_port = htons(PORT); 
+    printf("Connecting to TCP Echo service %s...\n", servIP);
+    printf("port number:%d\n", PORT);
 
 	// connect the client socket to server socket 
 	if (connect(sockfd, (SA*)&servaddr, sizeof(servaddr)) != 0) { 
@@ -57,7 +85,7 @@ int main()
 		printf("connected to the server..\n"); 
 
 	// function for chat 
-	func(sockfd); 
+	echo(sockfd); 
 
 	// close the socket 
 	close(sockfd); 

@@ -5,6 +5,7 @@
 #include <string.h> 
 #include <sys/socket.h> 
 #define MAX 80 
+#define PORT 8080 
 #define SA struct sockaddr 
 void func(int sockfd) 
 { 
@@ -31,13 +32,7 @@ int main()
 { 
 	int sockfd, connfd; 
 	struct sockaddr_in servaddr, cli; 
-    if (argc != 2)         /* Test for correct number of parameters */
-    {
-        fprintf(stderr,"Usage:  %s <UDP SERVER PORT>\n", argv[0]);
-        exit(1);
-    }
 
-    unsigned short PORT = atoi(argv[1]);  /* First arg:  local port */
 	// socket create and varification 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
 	if (sockfd == -1) { 
@@ -45,7 +40,7 @@ int main()
 		exit(0); 
 	} 
 	else
-	printf("Socket successfully created..\n"); 
+		printf("Socket successfully created..\n"); 
 	bzero(&servaddr, sizeof(servaddr)); 
 
 	// assign IP, PORT 

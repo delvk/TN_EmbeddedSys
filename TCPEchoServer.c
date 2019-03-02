@@ -5,6 +5,7 @@
 #include <sys/socket.h> 
 #include <sys/types.h> 
 #define MAX 80 
+#define PORT 8080 
 #define SA struct sockaddr 
 
 // Function designed for chat between client and server. 
@@ -38,16 +39,11 @@ void func(int sockfd)
 } 
 
 // Driver function 
-int main(int argc, char *argv[]) 
+int main() 
 { 
 	int sockfd, connfd, len; 
 	struct sockaddr_in servaddr, cli; 
-    if (argc != 2)         /* Test for correct number of parameters */
-    {
-        fprintf(stderr,"Usage:  %s <UDP SERVER PORT>\n", argv[0]);
-        exit(1);
-    }
-    unsigned short echoServPort = atoi(argv[1]);
+
 	// socket create and verification 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
 	if (sockfd == -1) { 
@@ -61,7 +57,7 @@ int main(int argc, char *argv[])
 	// assign IP, PORT 
 	servaddr.sin_family = AF_INET; 
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY); 
-	servaddr.sin_port = htons(echoServPort); 
+	servaddr.sin_port = htons(PORT); 
 
 	// Binding newly created socket to given IP and verification 
 	if ((bind(sockfd, (SA*)&servaddr, sizeof(servaddr))) != 0) { 

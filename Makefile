@@ -6,7 +6,7 @@ udpserver: UDPEchoServer.c
 udpclient: UDPEchoClient.c
 	gcc -o UDPEchoClient UDPEchoClient.c
 tcpserver: TCPEchoServer.c
-	gcc -o TCPEchoServer TCPEchoServer.c
+	gcc -o TCPEchoServer TCPEchoServer.c -lpthread
 tcpclient: TCPEchoClient.c
 	gcc -o TCPEchoClient TCPEchoClient.c
 clean:

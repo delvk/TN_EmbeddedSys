@@ -128,6 +128,7 @@ void startScreen(head *head, body *body)
 
 void drawScore()
 {
+	
 }
 void drawSnake(body body[29], head head)
 {
@@ -253,28 +254,28 @@ void snake_logic(head *head, body *body)
 
 void button_update(head *head)
 {
-	if (BUTTON_UP.pinRead() == LOW && head->D != true)
+	if (BUTTON_UP.pinRead() == LOW && !head->DOWN)
 	{
 		head->UP = true;
 		head->DOWN = false;
 		head->LEFT = false;
 		head->RIGHT = false;
 	}
-	if (BUTTON_DOWN.pinRead() == LOW && head->U != true)
+	if (BUTTON_DOWN.pinRead() == LOW && !head->UP)
 	{
 		head->UP = false;
 		head->DOWN = true;
 		head->LEFT = false;
 		head->RIGHT = false;
 	}
-	if (BUTTON_LEFT.pinRead() == LOW && head->R != true)
+	if (BUTTON_LEFT.pinRead() == LOW && !head->RIGHT)
 	{
 		head->UP = false;
 		head->DOWN = false;
 		head->LEFT = true;
 		head->RIGHT = false;
 	}
-	if (BUTTON_RIGHT.pinRead() == LOW && head->L != true)
+	if (BUTTON_RIGHT.pinRead() == LOW && !head->LEFT)
 	{
 		head->UP = false;
 		head->DOWN = false;
@@ -288,8 +289,8 @@ int main()
 	head head;
 	body body[29];
 	setupOLED();
-	startScreen(&head, body);
-	cleanUp();
+	// startScreen(&head, body);
+	// cleanUp();
 	while (1)
 	{
 		startScreen(&head, body);

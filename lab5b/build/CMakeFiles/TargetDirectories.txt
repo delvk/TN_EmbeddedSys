@@ -1,0 +1,1 @@
+/home/root/lab5/build/src/CMakeFiles/stand_walk_detect.dir

@@ -102,7 +102,7 @@ int main()
     cout << "-------------------------------------" << endl;
     cleanUp();
     displayValues(imu);
-    sleep(1);
+    sleep(2);
   }
 
   return MRAA_SUCCESS;

@@ -1,0 +1,1 @@
+/usr/bin/c++   -O3 -DNDEBUG  -lmraa CMakeFiles/stand_walk_detect.dir/stand_walk_detect.cpp.o CMakeFiles/stand_walk_detect.dir/SFE_LSM9DS0.cpp.o  -o ../../bin/stand_walk_detect -rdynamic 

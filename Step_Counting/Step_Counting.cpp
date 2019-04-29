@@ -115,7 +115,7 @@ int main()
       cout << "Accel z: " << imu->calcAccel(imu->az) << " g" << endl;
       cout << "-------------------------------------" << endl;
       myfile << imu->calcAccel(imu->ax) << ";" << imu->calcAccel(imu->ay) << ";" << imu->calcAccel(imu->az) << ";" << endl;
-      usleep(1);// 1 milisecond
+      usleep(5);// 1 milisecond
     }
     myfile.close();
     askingReplay(count);

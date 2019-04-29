@@ -110,11 +110,11 @@ int main()
 
       // Print the "real" values in more human comprehensible units.
       cout << "-------------------------------------" << endl;
-      cout << "Accel x: " << imu->calcAccel(imu->ax) << "g" << endl;
-      cout << "Accel y: " << imu->calcAccel(imu->ay) << " g" << endl;
-      cout << "Accel z: " << imu->calcAccel(imu->az) << " g" << endl;
+      cout<<"Recording..."<<endl;
       cout << "-------------------------------------" << endl;
-      myfile << imu->calcAccel(imu->ax) << ";" << imu->calcAccel(imu->ay) << ";" << imu->calcAccel(imu->az) << ";" << endl;
+
+      /* WRITE TO FILE */
+      myfile << imu->calcAccel(imu->ax) << "," << imu->calcAccel(imu->ay) << "," << imu->calcAccel(imu->az) << endl;
       usleep(5);// 1 milisecond
     }
     myfile.close();

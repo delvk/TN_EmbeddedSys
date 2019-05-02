@@ -30,14 +30,13 @@ void stepCouting(LSM9DS0 *imu);
 
 // GLOBAL VARIABLE
 edOLED oled;
-bool repeat = true;
-bool peak = false;
 int count = 0;
 float a_before = 0.0;
 float a_after = 0.0;
 float a_current = 0.0;
 int k = 0, D = 0;
 int idx = 0;
+float thresh_hold = 0.02;
 
 int main()
 {
@@ -52,38 +51,48 @@ int main()
 
   //Starting program
   startDisplay();
-
-  //Wait for user to press A to start
-  while (BUTTON_A.pinRead() == HIGH)
-    ;
-
-  //User pressed, clean oled
-  cleanUp();
-
-  //Stop condition, otherwise looping
-  while (BUTTON_B.pinRead() == HIGH)
+  while (true)
   {
-    if (!newAccelData)
+    //Wait for user to press A to start
+    while (BUTTON_A.pinRead() == HIGH)
+      ;
+
+    //User pressed, clean up all
+    cleanUp();
+    count = 0;
+    a_before=0;
+    a_after=0;
+    a_current=0;
+    idx=0;
+    k=0;
+    D=0;
+
+    //Stop condition, otherwise looping to count step 
+    while (BUTTON_B.pinRead() == HIGH)
     {
-      newAccelData = imu->newXData();
+      if (!newAccelData)
+      {
+        newAccelData = imu->newXData();
+      }
+      imu->readAccel();
+      imu->readTemp();
+      // Start step counting
+      stepCouting(imu);
+      //Interval 5ms
+      usleep(5);
     }
-    imu->readAccel();
-    imu->readTemp();
-    // Start step counting
-    stepCouting(imu);
-    //Interval 5ms
-    usleep(5);
+    // waiting for restart action
+    printFinished();
   }
-  printFinished();
   return MRAA_SUCCESS;
 }
 
 void stepCouting(LSM9DS0 *imu)
 {
   //Get all accelerator data
-  float ax = calcAccel(imu->ax);
-  float ay = calcAccel(imu->ay);
-  float az = calcAccel(imu->az);
+  float ax = imu->calcAccel(imu->ax);
+  float ay = imu->calcAccel(imu->ay);
+  float az = imu->calcAccel(imu->az);
 
   //calculate a = sqrt(x^2+y^2+z^2)
   float a = sqrt(ax * ax + ay * ay + az * az);
@@ -103,7 +112,7 @@ void stepCouting(LSM9DS0 *imu)
   }
   else
   {
-    if (a_before < a_current && a_current > a_after)
+    if ((a_before + thresh_hold) < a_current && a_current > (a_after + thresh_hold))
     {
       // peak = true;
       if (k != 0)
@@ -133,7 +142,8 @@ void printStep()
   cout << "step: " << count << endl;
   oled.setCursor(0, 0);
   oled.print("Counting\n");
-  oled.print("Step: %d", count);
+  oled.print("Step: ");
+  oled.print(count);
   oled.display();
 }
 void setupOLED()
@@ -146,9 +156,9 @@ void setupOLED()
 void startDisplay()
 {
   oled.clear(PAGE);
-  oled.setCursor(4, 16);
-  oled.print("Press A to start counting\n");
-  oled.print("Press B to stop recording");
+  oled.setCursor(0, 0);
+  oled.print("Press A to start \n");
+  oled.print("Press B to stop ");
   oled.display();
 }
 void cleanUp()
@@ -160,7 +170,8 @@ void printFinished()
 {
   oled.clear(PAGE);
   oled.setCursor(0, 0);
-  oled.print("Finished\n");
-  oled.print("Step count: %d", count);
+  oled.print("Step: ");
+  oled.print(count);
+  oled.print("\nA to start over");
   oled.display();
 }

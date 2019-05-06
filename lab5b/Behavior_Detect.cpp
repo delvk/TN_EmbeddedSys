@@ -13,7 +13,6 @@
 
 using namespace std;
 
-
 void setupOLED();
 void cleanUp();
 void displayStatus(float &delta);
@@ -110,20 +109,17 @@ void displayStatus(float &delta)
   oled.print("delta: ");
   oled.print(delta);
   oled.setCursor(0, 16);
-  char * status;
+  char *status;
   if (delta < 0.3)
   {
-    // cout << "STANDING" << endl;
-    // oled.print("\nSTANDING");
-    status=(char *)STANDING;
+
+    status = (char *)STANDING;
   }
   else
   {
-    // cout << "STANDING" << endl;
-    // oled.print("\nSTANDING");
-    status=(char *)WALKING;
+    status = (char *)WALKING;
   }
-  cout<<status<<endl;
+  cout << status << endl;
   oled.print(status);
   oled.display();
 }

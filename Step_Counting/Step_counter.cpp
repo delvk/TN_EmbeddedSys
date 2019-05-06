@@ -36,13 +36,17 @@ float a_after = 0.0;
 float a_current = 0.0;
 int k = 0, D = 0;
 int idx = 0;
-float thresh_hold = 0.02;
+float thresh_hold = 0.009;
 
-int main()
+int main(int argc, const char *argv[])
 {
   //Initial oled
   setupOLED();
-
+  if (argc == 1)
+	{
+		cout << "Using default threshold" << endl;
+	}
+  // else
   //Initial 9DOF
   LSM9DS0 *imu;
   bool newAccelData = false;

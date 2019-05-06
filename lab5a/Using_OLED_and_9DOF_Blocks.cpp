@@ -130,11 +130,17 @@ void displayValues(LSM9DS0 *imu)
   oled.clear(PAGE);
 
   oled.setCursor(0, 0);
-  printLines("Gyro x: ", imu->calcGyro(imu->gx), " deg/s");
+  printLines("Mag x: ", imu->calcMag(imu->mx), " Gauss");
+  // printLines("Accel x: ", imu->calcAccel(imu->ax), " g");
+  // printLines("Gyro x: ", imu->calcGyro(imu->gx), " deg/s");
   oled.setCursor(0, 16);
-  printLines("Gyro y: ", imu->calcGyro(imu->gy), " deg/s");
+  printLines("Mag y: ", imu->calcMag(imu->my), " Gauss");
+  // printLines("Accel y: ", imu->calcAccel(imu->ay), " g");
+  // printLines("Gyro y: ", imu->calcGyro(imu->gy), " deg/s");
   oled.setCursor(0, 32);
-  printLines("Gyro z: ", imu->calcGyro(imu->gz), " deg/s");
+  printLines("Mag z: ", imu->calcMag(imu->mz), " Gauss");
+  // printLines("Accel z: ", imu->calcAccel(imu->az), " g");
+  // printLines("Gyro z: ", imu->calcGyro(imu->gz), " deg/s");
   
   oled.display();
 }

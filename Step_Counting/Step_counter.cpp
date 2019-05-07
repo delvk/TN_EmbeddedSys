@@ -48,7 +48,10 @@ int main(int argc, const char *argv[])
   {
     cout << "Using default threshold" << endl;
   }
-  // else
+  else
+  {
+    thread_hold = (float)atof(argv[1]);
+  }
   //Initial 9DOF
   LSM9DS0 *imu;
   bool newAccelData = false;
@@ -189,7 +192,7 @@ void printFinished()
 
 bool treatAsTheSame(float a_old, float a_new, float d)
 {
-  return a_new < (a_old + d) && a_new > (a_old - d)
+  return a_new < (a_old + d) && a_new > (a_old - d);
 }
 bool isPeak(float &before, float &current, float &after, float &thresh_hold)
 {

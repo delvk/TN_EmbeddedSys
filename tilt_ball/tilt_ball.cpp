@@ -81,7 +81,7 @@ void getAccelValue(bool &isnew, LSM9DS0 *imu)
 	// set ball velorcity
 	ballVelX = -ax;
 	ballVelY = ay;
-	usleep(1);
+	usleep(5);
 }
 
 void setupOLED()

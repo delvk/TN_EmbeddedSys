@@ -27,6 +27,8 @@ void cleanUp();
 void printFinished();
 void printStep();
 void stepCouting(LSM9DS0 *imu);
+//
+bool treatAsTheSame(float a_old, float a_new, float d);
 
 // GLOBAL VARIABLE
 edOLED oled;
@@ -36,16 +38,16 @@ float a_after = 0.0;
 float a_current = 0.0;
 int k = 0, D = 0;
 int idx = 0;
-float thresh_hold = 0.009;
-
+float thresh_hold = 0.129441;
+bool isPeak(float &before, float &current, float &after, float &thresh_hold);
 int main(int argc, const char *argv[])
 {
   //Initial oled
   setupOLED();
   if (argc == 1)
-	{
-		cout << "Using default threshold" << endl;
-	}
+  {
+    cout << "Using default threshold" << endl;
+  }
   // else
   //Initial 9DOF
   LSM9DS0 *imu;
@@ -64,14 +66,14 @@ int main(int argc, const char *argv[])
     //User pressed, clean up all
     cleanUp();
     count = 0;
-    a_before=0;
-    a_after=0;
-    a_current=0;
-    idx=0;
-    k=0;
-    D=0;
+    a_before = 0;
+    a_after = 0;
+    a_current = 0;
+    idx = 0;
+    k = 0;
+    D = 0;
 
-    //Stop condition, otherwise looping to count step 
+    //Stop condition, otherwise looping to count step
     while (BUTTON_B.pinRead() == HIGH)
     {
       if (!newAccelData)
@@ -116,20 +118,25 @@ void stepCouting(LSM9DS0 *imu)
   }
   else
   {
-    if ((a_before + thresh_hold) < a_current && a_current > (a_after + thresh_hold))
+    // Start algorithm
+    if (!treatAsTheSame(a_current, a_after, 0.02))
     {
-      // peak = true;
-      if (k != 0)
+      if (isPeak(a_before, a_current, a_after, thresh_hold))
       {
-        D = idx - k - 1;
-        // cout << "D= " << D << endl;
-        if (D > 2)
-          count++;
+        count++;
+        a_before = a_current;
+        a_current = a_after;
+        // // peak = true;
+        // if (k != 0)
+        // {
+        //   D = idx - k - 1;
+        //   // cout << "D= " << D << endl;
+        //   if (D > 2)
+        //     count++;
+        // }
+        // k = idx;
       }
-      k = idx;
     }
-    a_before = a_current;
-    a_current = a_after;
     a_after = a;
   }
 
@@ -178,4 +185,15 @@ void printFinished()
   oled.print(count);
   oled.print("\nA to start over");
   oled.display();
+}
+
+bool treatAsTheSame(float a_old, float a_new, float d)
+{
+  return a_new < (a_old + d) && a_new > (a_old - d)
+}
+bool isPeak(float &before, float &current, float &after, float &thresh_hold)
+{
+  bool passTH = current > thresh_hold;
+  bool isLocalMax = (current > before) && (current > after);
+  return pass && isLocalMax;
 }

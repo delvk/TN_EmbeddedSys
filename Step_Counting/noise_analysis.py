@@ -43,15 +43,12 @@ for i in range(0, a.shape[0], step):
     samples.append(a[i])
     # print(i)
 # np.savetxt("foo.csv", samples)
-count, peak=step_counter(a,0.12)
+# count, peak=step_counter(a,0.12)
 
-# plt.subplot(2,1,1)
-# plt.plot(samples)
-# plt.title("Before")
 
-# plt.subplot(2,1,2)
-# plt.plot(peak)
-# plt.title("Before")
-print(count)
-plt.plot(a, 'r', peak, 'b')
-plt.show()
+plt.plot(samples)
+plt.title("Before")
+
+n = np.std(a)
+print(n)
+# plt.show()

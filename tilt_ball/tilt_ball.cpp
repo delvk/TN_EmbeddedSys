@@ -40,7 +40,7 @@ float ballPosX = LCDWIDTH / 2.0;
 float ballPosY = LCDHEIGHT / 2.0;
 float ballVelX = 0;
 float ballVelY = 0;
-
+float ballSpeed = 1.5;
 int main(int argc, char *argv[])
 {
 	// initial
@@ -58,20 +58,15 @@ int main(int argc, char *argv[])
 		getAccelValue(newAccelData, imu);
 		moveBall();
 		drawGame();
-		if (checkWin())
-		{
-			drawWin(checkWin());
-			cleanUp();
-			return 0;
-		}
 	}
+	return 0;
 }
 
 void getAccelValue(bool &isnew, LSM9DS0 *imu)
 {
 	if (!isnew)
 	{
-		newAccelData = imu->newXData();
+		isnew = imu->newXData();
 	}
 	imu->readAccel();
 	imu->readTemp();
@@ -79,9 +74,8 @@ void getAccelValue(bool &isnew, LSM9DS0 *imu)
 	float ax = imu->calcAccel(imu->ax);
 	float ay = imu->calcAccel(imu->ay);
 	// set ball velorcity
-	ballVelX = -ax;
-	ballVelY = ay;
-	usleep(5);
+	ballVelX = -ax * ballSpeed;
+	ballVelY = ay * ballSpeed;
 }
 
 void setupOLED()
@@ -95,25 +89,11 @@ void setupOLED()
 void startScreen()
 {
 	// Reset all game variables:
-	player2Score = 0;
-	playerScore = 0;
-	player2PosY = 0.0;
+
 	ballPosX = LCDWIDTH / 2.0;
 	ballPosY = LCDHEIGHT / 2.0;
 	ballVelX = 0.0;
 	ballVelY = 0.0;
-
-	// Draw the splash screen:
-	oled.clear(PAGE);
-	oled.setCursor(14, 5);
-	oled.print("Press A to play");
-
-	// Call display to actually draw it on the OLED:
-	oled.display();
-
-	// Wait for either button A or B to be pressed:
-	while ((BUTTON_A.pinRead() == HIGH))
-		;
 }
 
 // Move the ball and re-calculate its position:
@@ -153,7 +133,6 @@ void drawGame()
 
 	oled.display();
 }
-
 
 // Draw a ball, give it's x and y coords
 void drawBall(int x, int y)

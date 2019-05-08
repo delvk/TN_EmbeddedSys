@@ -38,7 +38,7 @@ float a_after = 0.0;
 float a_current = 0.0;
 int k = 0, D = 0;
 int idx = 0;
-float thresh_hold = 0.129441;
+float thresh_hold = 1.21;
 bool isPeak(float &before, float &current, float &after, float &thresh_hold);
 int main(int argc, const char *argv[])
 {
@@ -50,7 +50,8 @@ int main(int argc, const char *argv[])
   }
   else
   {
-    thread_hold = (float)atof(argv[1]);
+    thresh_hold = (float)atof(argv[1]);
+    cout << "Threshold set to :" << thresh_hold << endl;
   }
   //Initial 9DOF
   LSM9DS0 *imu;
@@ -88,7 +89,7 @@ int main(int argc, const char *argv[])
       // Start step counting
       stepCouting(imu);
       //Interval 5ms
-      usleep(5);
+      usleep(1);
     }
     // waiting for restart action
     printFinished();
@@ -122,13 +123,12 @@ void stepCouting(LSM9DS0 *imu)
   else
   {
     // Start algorithm
-    if (!treatAsTheSame(a_current, a_after, 0.02))
+    if (!treatAsTheSame(a_current, a_after, 0.01))
     {
       if (isPeak(a_before, a_current, a_after, thresh_hold))
       {
         count++;
-        a_before = a_current;
-        a_current = a_after;
+
         // // peak = true;
         // if (k != 0)
         // {
@@ -140,6 +140,8 @@ void stepCouting(LSM9DS0 *imu)
         // k = idx;
       }
     }
+    a_before = a_current;
+    a_current = a_after;
     a_after = a;
   }
 
@@ -198,5 +200,5 @@ bool isPeak(float &before, float &current, float &after, float &thresh_hold)
 {
   bool passTH = current > thresh_hold;
   bool isLocalMax = (current > before) && (current > after);
-  return pass && isLocalMax;
+  return passTH && isLocalMax;
 }
